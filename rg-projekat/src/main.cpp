@@ -30,7 +30,7 @@ float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
 
-bool blinn = false;
+bool blinn = true;
 
 // timing
 float deltaTime = 0.0f;
@@ -108,6 +108,10 @@ int main() {
     // face culling
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
     // build and compile shaders
     Shader skyboxShader("resources/shaders/skybox.vs", "resources/shaders/skybox.fs");
@@ -286,13 +290,6 @@ int main() {
         villageShader.setMat4("model", model);
         village.Draw(villageShader);
 
-        // ################################################# dirlight #################################################
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(115.0f, 80.0f, -20.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f));	// it's a bit too big for our scene, so scale it down
-        cubeShader.setMat4("model", model);
-        cube.Draw(cubeShader);
-
 
         // ################################################# LAMPPOST1 #################################################
         model = glm::mat4(1.0f);
@@ -438,7 +435,6 @@ int main() {
         model = glm::scale(model, glm::vec3(3.0f));	// it's a bit too big for our scene, so scale it down
         porscheShader.setMat4("model", model);
         porsche.Draw(porscheShader);
-
 
         // draw skybox as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content

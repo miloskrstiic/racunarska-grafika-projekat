@@ -1,11 +1,24 @@
-# project_base
-Prazan projekat sa pratećim bibliotekama koje koristimo na času. 
+# Computer Graphics Project
+Village in the desert
 
-# Uputstvo
-1. `git clone https://github.com/matf-racunarska-grafika/project_base.git`
-2. CLion -> Open -> path/to/my/project_base
-3. Main se nalazi u src/main.cpp
-4. Cpp fajlovi idu u src folder
-5. Zaglavlja (h i hpp) fajlovi idu u include
-6. Šejderi idu u folder shaders. `Vertex shader` ima ekstenziju `.vs`, `fragment shader` ima ekstenziju `.fs`
-7. ALT+SHIFT+F10 -> project_base -> run
+# Key bindings
+* `WASD` - movement
+* `ESC` - terminates the program
+
+## Models and textures
+* [Wooden Lantern](https://sketchfab.com/3d-models/wooden-lantern-0ba0e8b0f07e40d9a8d33bd21fe20ca5)
+* [Volgar VIllage](https://sketchfab.com/3d-models/volgar-village-ea38b75764834b77b791d51d49677cf2)
+* [Nissan 240SX Daijiro Yoshihara](https://sketchfab.com/3d-models/nissan-240sx-daijiro-yoshihara-a71fff952c85453a99bb46078c30605b)
+* [FREE 1975 Porsche 911 (930) Turbo](https://sketchfab.com/3d-models/free-1975-porsche-911-930-turbo-8568d9d14a994b9cae59499f0dbed21e)
+* [Mercedes Benz C63 AMG](https://sketchfab.com/3d-models/mercedes-benz-c63-amg-bd16482806784419a6924754c1c13119)
+
+## Advanced techniques
+* Cubemaps
+
+## Gallery
+
+## Info
+* Student: Miloš Krstić
+* Year: 2023/2024
+* Teaching Assistant: Marko Spasić
+* Professor: Vesna Marinković
