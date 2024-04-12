@@ -204,7 +204,7 @@ int main() {
     Shader lamppostShader("resources/shaders/model_loading.vs", "resources/shaders/lamppost.fs");
 
     // lighting info
-    // ----------------------------
+    // ---------------------------
     // directional light
     DirLight directional;
     glm::vec3 vec1 = glm::vec3(-50.0f, 20.0f, 20.0f);
