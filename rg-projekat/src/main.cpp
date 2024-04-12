@@ -25,7 +25,7 @@ const unsigned int SCR_WIDTH = 1100;
 const unsigned int SCR_HEIGHT = 850;
 
 // camera
-Camera camera(glm::vec3(20.0f, 2.0f, -9.0f));
+Camera camera(glm::vec3(-30.0f, 2.0f, -9.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
@@ -230,7 +230,7 @@ int main() {
                                            glm::vec3(5.5f, 3.7f, 1.0f),
                                            glm::vec3(5.5f, 3.7f, 1.0f),
                                                 1.0f, 0.09f, 0.032f);
-    PointLight pointLight2 = initPointLight(glm::vec3(13.0f, -0.6f, -4.13f),
+    PointLight pointLight2 = initPointLight(glm::vec3(-1.0f, -0.6f, -4.13f),
                                            glm::vec3(5.5f, 3.7f, 1.0f),
                                            glm::vec3(5.5f, 3.7f, 1.0f),
                                            glm::vec3(5.5f, 3.7f, 1.0f),
@@ -324,14 +324,14 @@ int main() {
 
         // ################################################# LAMPPOST2 #################################################
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(13.0f, -0.6f, -4.13f)); // translate it down so it's at the center of the scene
+        model = glm::translate(model, glm::vec3(-1.0f, -0.6f, -4.13f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(0.1f));	// it's a bit too big for our scene, so scale it down
         cubeShader.setMat4("model", model);
         cube.Draw(cubeShader);
 
         setPointLight("pointlight.", pointLight2, lamppostShader);
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(13.0f, -4.0f, -6.3f)); // translate it down so it's at the center of the scene
+        model = glm::translate(model, glm::vec3(-1.0f, -4.0f, -6.3f)); // translate it down so it's at the center of the scene
         model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.47f));	// it's a bit too big for our scene, so scale it down
         lamppostShader.setMat4("model", model);
@@ -425,6 +425,7 @@ int main() {
         porscheShader.setBool("blinn", blinn);
         // Pointlight
         setPointLight("pointlight.", pointLight, porscheShader);
+        setPointLight("pointlight2.", pointLight2, porscheShader);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-7.0f, -2.69f, -2.5f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(3.0f));	// it's a bit too big for our scene, so scale it down
