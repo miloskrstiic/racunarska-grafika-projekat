@@ -166,12 +166,12 @@ int main() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
     vector<std::string> faces {
-        FileSystem::getPath("resources/textures/skybox/right.tga"),
-        FileSystem::getPath("resources/textures/skybox/left.tga"),
-        FileSystem::getPath("resources/textures/skybox/top.jpg"),
-        FileSystem::getPath("resources/textures/skybox/bottom.jpg"),
-        FileSystem::getPath("resources/textures/skybox/front.tga"),
-        FileSystem::getPath("resources/textures/skybox/back.tga")
+        FileSystem::getPath("resources/textures/skybox2/right.tga"),
+        FileSystem::getPath("resources/textures/skybox2/left.tga"),
+        FileSystem::getPath("resources/textures/skybox2/top.jpg"),
+        FileSystem::getPath("resources/textures/skybox2/bottom.tga"),
+        FileSystem::getPath("resources/textures/skybox2/front.tga"),
+        FileSystem::getPath("resources/textures/skybox2/back.tga")
     };
     unsigned int cubemapTexture = loadCubemap(faces);
     // shader configuration
@@ -207,12 +207,12 @@ int main() {
     // ---------------------------
     // directional light
     DirLight directional;
-    glm::vec3 vec1 = glm::vec3(-50.0f, 20.0f, 20.0f);
-    glm::vec3 vec2 = glm::vec3(-45.0f, 17.0f, 15.0f);
+    glm::vec3 vec1 = glm::vec3(115.0f, 80.0f, -20.0f);
+    glm::vec3 vec2 = glm::vec3(105.0f, 75.0f, -18.0f);
     directional.direction = vec2 - vec1;
-    directional.ambient = glm::vec3(0.09f);
-    directional.diffuse = glm::vec3(0.4f);
-    directional.specular = glm::vec3(0.5f);
+    directional.ambient = glm::vec3(0.12f);
+    directional.diffuse = glm::vec3(0.5f);
+    directional.specular = glm::vec3(0.6f);
 
     // spotlight
     SpotLight spotlight;
@@ -285,6 +285,13 @@ int main() {
         model = glm::scale(model, glm::vec3(1.0f));	// it's a bit too big for our scene, so scale it down
         villageShader.setMat4("model", model);
         village.Draw(villageShader);
+
+        // ################################################# dirlight #################################################
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(115.0f, 80.0f, -20.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(1.0f));	// it's a bit too big for our scene, so scale it down
+        cubeShader.setMat4("model", model);
+        cube.Draw(cubeShader);
 
 
         // ################################################# LAMPPOST1 #################################################
@@ -363,7 +370,7 @@ int main() {
         // Pointlight
         setPointLight("pointlight.", pointLight, nissanShader);
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-20.0f, -2.75f, 2.5f)); // translate it down so it's at the center of the scene
+        model = glm::translate(model, glm::vec3(-20.0f, -2.75f, 1.9f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(3.0f));	// it's a bit too big for our scene, so scale it down
         nissanShader.setMat4("model", model);
         nissan.Draw(nissanShader);
