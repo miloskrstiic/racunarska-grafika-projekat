@@ -29,19 +29,8 @@ Camera camera(glm::vec3(-34.0f, 2.0f, -9.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
-float heightScale = 0.1;
 
-bool gammaEnabled = false;
-bool gammaKeyPressed = false;
 bool blinn = false;
-bool blinnKeyPressed = false;
-bool hdr = true;
-bool hdrKeyPressed = false;
-bool bloom = true;
-bool bloomKeyPressed = false;
-float exposure = 0.77f;
-bool grayscale = false;
-bool grayscaleKeyPressed = false;
 
 // timing
 float deltaTime = 0.0f;
@@ -190,9 +179,9 @@ int main() {
     skyboxShader.setInt("skybox", 0);
 
     // ################################################# MODELS #################################################
-
     Model cube("resources/objects/cube/cube.obj");
     cube.SetShaderTextureNamePrefix("material.");
+    Shader cubeShader("resources/shaders/model_loading.vs", "resources/shaders/model_loading.fs");
     // load models
     Model village("resources/objects/village/VolgarStreet.obj");
     village.SetShaderTextureNamePrefix("material.");
@@ -209,6 +198,10 @@ int main() {
     Model porsche("resources/objects/porsche/N17ARA9C0GT5W7X12AGMQ0F88.obj");
     porsche.SetShaderTextureNamePrefix("material.");
     Shader porscheShader("resources/shaders/model_loading.vs", "resources/shaders/porsche.fs");
+
+    Model lamppost("resources/objects/lamppost/Wooden Lantern.obj");
+    lamppost.SetShaderTextureNamePrefix("material.");
+    Shader lamppostShader("resources/shaders/model_loading.vs", "resources/shaders/lamppost.fs");
 
     // lighting info
     // ----------------------------
@@ -232,10 +225,10 @@ int main() {
     spotlight.outerCutOff = glm::cos(glm::radians(16.5f));
 
     // pointlights
-    PointLight pointLightNissan = initPointLight(glm::vec3(-18.0f, 0.0f, 2.5f),
-                                                 glm::vec3(1.0f),
-                                                 glm::vec3(2.0f),
-                                                 glm::vec3(3.0f),
+    PointLight pointLight = initPointLight(glm::vec3(-15.0f, -0.6f, 3.83f),
+                                                 glm::vec3(5.5f, 3.7f, 1.0f),
+                                           glm::vec3(5.5f, 3.7f, 1.0f),
+                                           glm::vec3(5.5f, 3.7f, 1.0f),
                                                 1.0f, 0.09f, 0.032f);
 
     // render loop
@@ -277,7 +270,8 @@ int main() {
         villageShader.setFloat("spotlight.cutOff", spotlight.cutOff);
         villageShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
         // Pointlight
-        setPointLight("pointlight.", pointLightNissan, villageShader);
+        // TODO: lamppost -> pointlight
+        setPointLight("pointlight.", pointLight, villageShader);
         // blinn
         villageShader.setBool("blinn", blinn);
         // render the loaded model
@@ -289,12 +283,42 @@ int main() {
 
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-20.0f, 5.0f, 5.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f));	// it's a bit too big for our scene, so scale it down
-        villageShader.setMat4("model", model);
-        cube.Draw(villageShader);
+        model = glm::translate(model, glm::vec3(-15.0f, -0.6f, 3.83f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.1f));	// it's a bit too big for our scene, so scale it down
+        cubeShader.setMat4("model", model);
+        cube.Draw(cubeShader);
 
-        
+
+        lamppostShader.use();
+        model = glm::mat4(1.0f);
+        lamppostShader.setMat4("projection", projection);
+        lamppostShader.setMat4("view", view);
+//        villageShader.setMat4("model", model);
+        lamppostShader.setVec3("viewPos", camera.Position);
+        lamppostShader.setFloat("material.shininess", 16.0f);
+        //Directional light
+        lamppostShader.setVec3("directional.direction", directional.direction);
+        lamppostShader.setVec3("directional.ambient", directional.ambient);
+        lamppostShader.setVec3("directional.diffuse", directional.diffuse);
+        lamppostShader.setVec3("directional.specular", directional.specular);
+        //Spotlight
+        lamppostShader.setVec3("spotlight.position", camera.Position);
+        lamppostShader.setVec3("spotlight.direction", camera.Front);
+        lamppostShader.setVec3("spotlight.ambient", spotlight.ambient);
+        lamppostShader.setVec3("spotlight.diffuse", spotlight.diffuse);
+        lamppostShader.setFloat("spotlight.cutOff", spotlight.cutOff);
+        lamppostShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
+        // Pointlight
+        // TODO: lamppost -> pointlight
+        setPointLight("pointlight.", pointLight, lamppostShader);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-15.0f, -4.0f, 6.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.47f));	// it's a bit too big for our scene, so scale it down
+        lamppostShader.setMat4("model", model);
+        lamppost.Draw(lamppostShader);
+
+
+
         nissanShader.use();
         model = glm::mat4(1.0f);
         nissanShader.setMat4("projection", projection);
@@ -317,7 +341,8 @@ int main() {
         // blinn
         nissanShader.setBool("blinn", blinn);
         // Pointlight
-//        setPointLight("pointlight.", , nissanShader);
+        // TODO: lamppost -> pointlight
+        setPointLight("pointlight.", pointLight, nissanShader);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-20.0f, -2.75f, 2.5f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(3.0f));	// it's a bit too big for our scene, so scale it down
@@ -377,6 +402,9 @@ int main() {
         porscheShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
         // blinn
         porscheShader.setBool("blinn", blinn);
+        // Pointlight
+        // TODO: lamppost -> pointlight
+//        setPointLight("pointlight.", , porscheShader);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-7.0f, -2.69f, -2.5f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(3.0f));	// it's a bit too big for our scene, so scale it down
@@ -552,9 +580,9 @@ PointLight initPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffu
 
 void setPointLight(std::string name, PointLight pointLight, Shader shader) {
     shader.setVec3(name + "position", pointLight.position);
-    shader.setVec3(name + "ambient", pointLight.ambient * 0.1f);
-    shader.setVec3(name + "diffuse", pointLight.diffuse * 0.8f);
-    shader.setVec3(name + "specular", pointLight.specular * 0.15f);
+    shader.setVec3(name + "ambient", pointLight.ambient * 0.3f);
+    shader.setVec3(name + "diffuse", pointLight.diffuse * 2.0f);
+    shader.setVec3(name + "specular", pointLight.specular * 0.5f);
     shader.setFloat(name + "constant", pointLight.constant);
     shader.setFloat(name + "linear", pointLight.linear);
     shader.setFloat(name + "quadratic", pointLight.quadratic);
