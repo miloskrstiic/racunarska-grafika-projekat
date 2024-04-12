@@ -190,23 +190,33 @@ int main() {
     skyboxShader.setInt("skybox", 0);
 
     // ################################################# MODELS #################################################
-    Shader modelShader("resources/shaders/model_loading.vs", "resources/shaders/model_loading.fs");
 
+    Model cube("resources/objects/cube/cube.obj");
+    cube.SetShaderTextureNamePrefix("material.");
     // load models
     Model village("resources/objects/village/VolgarStreet.obj");
     village.SetShaderTextureNamePrefix("material.");
+    Shader villageShader("resources/shaders/model_loading.vs", "resources/shaders/model_loading.fs");
+
     Model nissan("resources/objects/nissan/source/SA5HLA5LO5H1RQJ42KKT685IS.obj");
     nissan.SetShaderTextureNamePrefix("material.");
+    Shader nissanShader("resources/shaders/model_loading.vs", "resources/shaders/nissan.fs");
+
     Model mercedes("resources/objects/mercedes/9IGEYFTP0J6AQ1IDGYCN823X7.obj");
     mercedes.SetShaderTextureNamePrefix("material.");
+    Shader mercedesShader("resources/shaders/model_loading.vs", "resources/shaders/mercedes.fs");
+
     Model porsche("resources/objects/porsche/N17ARA9C0GT5W7X12AGMQ0F88.obj");
     porsche.SetShaderTextureNamePrefix("material.");
+    Shader porscheShader("resources/shaders/model_loading.vs", "resources/shaders/porsche.fs");
 
     // lighting info
     // ----------------------------
     // directional light
     DirLight directional;
-    directional.direction = glm::vec3(-3.0f, -10.0f, -0.4f);
+    glm::vec3 vec1 = glm::vec3(-50.0f, 20.0f, 20.0f);
+    glm::vec3 vec2 = glm::vec3(-45.0f, 17.0f, 15.0f);
+    directional.direction = vec2 - vec1;
     directional.ambient = glm::vec3(0.09f);
     directional.diffuse = glm::vec3(0.4f);
     directional.specular = glm::vec3(0.5f);
@@ -222,25 +232,11 @@ int main() {
     spotlight.outerCutOff = glm::cos(glm::radians(16.5f));
 
     // pointlights
-    vector<PointLight> cars;
     PointLight pointLightNissan = initPointLight(glm::vec3(-18.0f, 0.0f, 2.5f),
                                                  glm::vec3(1.0f),
                                                  glm::vec3(2.0f),
                                                  glm::vec3(3.0f),
                                                 1.0f, 0.09f, 0.032f);
-    PointLight pointLightPorsche = initPointLight(glm::vec3(-5.0f, 0.0f, -2.5f),
-                                                glm::vec3(1.0f),
-                                                glm::vec3(2.0f),
-                                                glm::vec3(3.0f),
-                                                1.0f, 0.09f, 0.032f);
-    PointLight pointLightMercedes = initPointLight(glm::vec3(9.0f, 0.0f, -2.5f),
-                                                   glm::vec3(1.0f),
-                                                   glm::vec3(2.0f),
-                                                   glm::vec3(3.0f),
-                                                   1.0f, 0.09f, 0.032f);
-    cars.push_back(pointLightNissan);
-    cars.push_back(pointLightMercedes);
-    cars.push_back(pointLightPorsche);
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -261,61 +257,131 @@ int main() {
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 model = glm::mat4(1.0f);
 
-        modelShader.use();
+        villageShader.use();
         model = glm::mat4(1.0f);
-
-        modelShader.setMat4("projection", projection);
-        modelShader.setMat4("view", view);
-//        modelShader.setMat4("model", model);
-        modelShader.setVec3("viewPos", camera.Position);
-        modelShader.setFloat("material.shininess", 16.0f);
-
-        // PointLights
-        for (unsigned int i = 0; i < cars.size(); i++) {
-//            setPointLight(std::string name, PointLight pointLight, Shader modelShader)
-            PointLight currentPointLight = cars[i];
-            setPointLight("pointlight[" + std::to_string(i) + "].", currentPointLight, modelShader);
-        }
+        villageShader.setMat4("projection", projection);
+        villageShader.setMat4("view", view);
+//        villageShader.setMat4("model", model);
+        villageShader.setVec3("viewPos", camera.Position);
+        villageShader.setFloat("material.shininess", 16.0f);
         //Directional light
-        modelShader.setVec3("directional.direction", directional.direction);
-        modelShader.setVec3("directional.ambient", directional.ambient);
-        modelShader.setVec3("directional.diffuse", directional.diffuse);
-        modelShader.setVec3("directional.specular", directional.specular);
+        villageShader.setVec3("directional.direction", directional.direction);
+        villageShader.setVec3("directional.ambient", directional.ambient);
+        villageShader.setVec3("directional.diffuse", directional.diffuse);
+        villageShader.setVec3("directional.specular", directional.specular);
         //Spotlight
-        modelShader.setVec3("spotlight.position", camera.Position);
-        modelShader.setVec3("spotlight.direction", camera.Front);
-        modelShader.setVec3("spotlight.ambient", spotlight.ambient);
-        modelShader.setVec3("spotlight.diffuse", spotlight.diffuse);
-        modelShader.setFloat("spotlight.cutOff", spotlight.cutOff);
-        modelShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
-
-        modelShader.setBool("blinn", blinn);
-
+        villageShader.setVec3("spotlight.position", camera.Position);
+        villageShader.setVec3("spotlight.direction", camera.Front);
+        villageShader.setVec3("spotlight.ambient", spotlight.ambient);
+        villageShader.setVec3("spotlight.diffuse", spotlight.diffuse);
+        villageShader.setFloat("spotlight.cutOff", spotlight.cutOff);
+        villageShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
+        // Pointlight
+        setPointLight("pointlight.", pointLightNissan, villageShader);
+        // blinn
+        villageShader.setBool("blinn", blinn);
         // render the loaded model
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -4.0f, 0.0f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(1.0f));	// it's a bit too big for our scene, so scale it down
-        modelShader.setMat4("model", model);
-        village.Draw(modelShader);
+        villageShader.setMat4("model", model);
+        village.Draw(villageShader);
 
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-20.0f, 5.0f, 5.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(1.0f));	// it's a bit too big for our scene, so scale it down
+        villageShader.setMat4("model", model);
+        cube.Draw(villageShader);
+
+        
+        nissanShader.use();
+        model = glm::mat4(1.0f);
+        nissanShader.setMat4("projection", projection);
+        nissanShader.setMat4("view", view);
+//        nissanShader.setMat4("model", model);
+        nissanShader.setVec3("viewPos", camera.Position);
+        nissanShader.setFloat("material.shininess", 16.0f);
+        //Directional light
+        nissanShader.setVec3("directional.direction", directional.direction);
+        nissanShader.setVec3("directional.ambient", directional.ambient);
+        nissanShader.setVec3("directional.diffuse", directional.diffuse);
+        nissanShader.setVec3("directional.specular", directional.specular);
+        //Spotlight
+        nissanShader.setVec3("spotlight.position", camera.Position);
+        nissanShader.setVec3("spotlight.direction", camera.Front);
+        nissanShader.setVec3("spotlight.ambient", spotlight.ambient);
+        nissanShader.setVec3("spotlight.diffuse", spotlight.diffuse);
+        nissanShader.setFloat("spotlight.cutOff", spotlight.cutOff);
+        nissanShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
+        // blinn
+        nissanShader.setBool("blinn", blinn);
+        // Pointlight
+//        setPointLight("pointlight.", , nissanShader);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-20.0f, -2.75f, 2.5f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(3.0f));	// it's a bit too big for our scene, so scale it down
-        modelShader.setMat4("model", model);
-        nissan.Draw(modelShader);
+        nissanShader.setMat4("model", model);
+        nissan.Draw(nissanShader);
 
+
+
+        mercedesShader.use();
+        model = glm::mat4(1.0f);
+        mercedesShader.setMat4("projection", projection);
+        mercedesShader.setMat4("view", view);
+//        mercedesShader.setMat4("model", model);
+        mercedesShader.setVec3("viewPos", camera.Position);
+        mercedesShader.setFloat("material.shininess", 16.0f);
+        //Directional light
+        mercedesShader.setVec3("directional.direction", directional.direction);
+        mercedesShader.setVec3("directional.ambient", directional.ambient);
+        mercedesShader.setVec3("directional.diffuse", directional.diffuse);
+        mercedesShader.setVec3("directional.specular", directional.specular);
+        //Spotlight
+        mercedesShader.setVec3("spotlight.position", camera.Position);
+        mercedesShader.setVec3("spotlight.direction", camera.Front);
+        mercedesShader.setVec3("spotlight.ambient", spotlight.ambient);
+        mercedesShader.setVec3("spotlight.diffuse", spotlight.diffuse);
+        mercedesShader.setFloat("spotlight.cutOff", spotlight.cutOff);
+        mercedesShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
+        // blinn
+        mercedesShader.setBool("blinn", blinn);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(7.0f, -2.69f, -2.5f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(3.0f));	// it's a bit too big for our scene, so scale it down
         model = glm::rotate(model, (float)glm::radians(180.0), glm::vec3(0.0f, 1.0f, 0.0f));
-        modelShader.setMat4("model", model);
-        mercedes.Draw(modelShader);
+        mercedesShader.setMat4("model", model);
+        mercedes.Draw(mercedesShader);
 
+
+
+        porscheShader.use();
+        model = glm::mat4(1.0f);
+        porscheShader.setMat4("projection", projection);
+        porscheShader.setMat4("view", view);
+//        porscheShader.setMat4("model", model);
+        porscheShader.setVec3("viewPos", camera.Position);
+        porscheShader.setFloat("material.shininess", 16.0f);
+        //Directional light
+        porscheShader.setVec3("directional.direction", directional.direction);
+        porscheShader.setVec3("directional.ambient", directional.ambient);
+        porscheShader.setVec3("directional.diffuse", directional.diffuse);
+        porscheShader.setVec3("directional.specular", directional.specular);
+        //Spotlight
+        porscheShader.setVec3("spotlight.position", camera.Position);
+        porscheShader.setVec3("spotlight.direction", camera.Front);
+        porscheShader.setVec3("spotlight.ambient", spotlight.ambient);
+        porscheShader.setVec3("spotlight.diffuse", spotlight.diffuse);
+        porscheShader.setFloat("spotlight.cutOff", spotlight.cutOff);
+        porscheShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
+        // blinn
+        porscheShader.setBool("blinn", blinn);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-7.0f, -2.69f, -2.5f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(3.0f));	// it's a bit too big for our scene, so scale it down
-        modelShader.setMat4("model", model);
-        porsche.Draw(modelShader);
+        porscheShader.setMat4("model", model);
+        porsche.Draw(porscheShader);
 
 
         // draw skybox as last
@@ -484,14 +550,14 @@ PointLight initPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffu
     return pointLight;
 }
 
-void setPointLight(std::string name, PointLight pointLight, Shader modelShader) {
-    modelShader.setVec3(name + "position", pointLight.position);
-    modelShader.setVec3(name + "ambient", pointLight.ambient * 0.1f);
-    modelShader.setVec3(name + "diffuse", pointLight.diffuse * 0.8f);
-    modelShader.setVec3(name + "specular", pointLight.specular * 0.15f);
-    modelShader.setFloat(name + "constant", pointLight.constant);
-    modelShader.setFloat(name + "linear", pointLight.linear);
-    modelShader.setFloat(name + "quadratic", pointLight.quadratic);
-    modelShader.setVec3("viewPos", camera.Position);
-    modelShader.setFloat("material.shininess", 32.0f);
+void setPointLight(std::string name, PointLight pointLight, Shader shader) {
+    shader.setVec3(name + "position", pointLight.position);
+    shader.setVec3(name + "ambient", pointLight.ambient * 0.1f);
+    shader.setVec3(name + "diffuse", pointLight.diffuse * 0.8f);
+    shader.setVec3(name + "specular", pointLight.specular * 0.15f);
+    shader.setFloat(name + "constant", pointLight.constant);
+    shader.setFloat(name + "linear", pointLight.linear);
+    shader.setFloat(name + "quadratic", pointLight.quadratic);
+    shader.setVec3("viewPos", camera.Position);
+    shader.setFloat("material.shininess", 32.0f);
 }
