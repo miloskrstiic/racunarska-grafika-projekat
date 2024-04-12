@@ -82,7 +82,7 @@ int main() {
 #endif
 
     // glfw window creation
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Village", nullptr, nullptr);
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -111,7 +111,6 @@ int main() {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 
     // build and compile shaders
     Shader skyboxShader("resources/shaders/skybox.vs", "resources/shaders/skybox.fs");
@@ -207,6 +206,7 @@ int main() {
     lamppost.SetShaderTextureNamePrefix("material.");
     Shader lamppostShader("resources/shaders/model_loading.vs", "resources/shaders/lamppost.fs");
 
+
     // lighting info
     // ---------------------------
     // directional light
@@ -239,6 +239,7 @@ int main() {
                                            glm::vec3(5.5f, 3.7f, 1.0f),
                                            glm::vec3(5.5f, 3.7f, 1.0f),
                                            1.0f, 0.09f, 0.032f);
+
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -405,7 +406,6 @@ int main() {
         mercedes.Draw(mercedesShader);
 
 
-
         porscheShader.use();
         model = glm::mat4(1.0f);
         porscheShader.setMat4("projection", projection);
@@ -451,6 +451,7 @@ int main() {
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
 
+
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -478,6 +479,10 @@ void processInput(GLFWwindow *window)
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+        blinn = false;
+    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+        blinn = true;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

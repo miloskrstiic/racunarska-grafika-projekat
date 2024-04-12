@@ -4,6 +4,8 @@ Village in the desert
 # Key bindings
 * `WASD` - movement
 * `ESC` - terminates the program
+* `N` - Blinn-Phong off
+* `B` - Blinn-Phong on
 
 ## Advanced techniques
 * Cubemaps
