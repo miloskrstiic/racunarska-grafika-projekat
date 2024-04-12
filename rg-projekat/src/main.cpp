@@ -25,7 +25,7 @@ const unsigned int SCR_WIDTH = 1100;
 const unsigned int SCR_HEIGHT = 850;
 
 // camera
-Camera camera(glm::vec3(-34.0f, 2.0f, -9.0f));
+Camera camera(glm::vec3(20.0f, 2.0f, -9.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
@@ -224,12 +224,17 @@ int main() {
     spotlight.cutOff = glm::cos(glm::radians(13.0f));
     spotlight.outerCutOff = glm::cos(glm::radians(16.5f));
 
-    // pointlights
+    // pointlight
     PointLight pointLight = initPointLight(glm::vec3(-15.0f, -0.6f, 3.83f),
                                                  glm::vec3(5.5f, 3.7f, 1.0f),
                                            glm::vec3(5.5f, 3.7f, 1.0f),
                                            glm::vec3(5.5f, 3.7f, 1.0f),
                                                 1.0f, 0.09f, 0.032f);
+    PointLight pointLight2 = initPointLight(glm::vec3(13.0f, -0.6f, -4.13f),
+                                           glm::vec3(5.5f, 3.7f, 1.0f),
+                                           glm::vec3(5.5f, 3.7f, 1.0f),
+                                           glm::vec3(5.5f, 3.7f, 1.0f),
+                                           1.0f, 0.09f, 0.032f);
 
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -270,8 +275,8 @@ int main() {
         villageShader.setFloat("spotlight.cutOff", spotlight.cutOff);
         villageShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
         // Pointlight
-        // TODO: lamppost -> pointlight
         setPointLight("pointlight.", pointLight, villageShader);
+        setPointLight("pointlight2.", pointLight2, villageShader);
         // blinn
         villageShader.setBool("blinn", blinn);
         // render the loaded model
@@ -282,12 +287,12 @@ int main() {
         village.Draw(villageShader);
 
 
+        // ################################################# LAMPPOST1 #################################################
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-15.0f, -0.6f, 3.83f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(0.1f));	// it's a bit too big for our scene, so scale it down
         cubeShader.setMat4("model", model);
         cube.Draw(cubeShader);
-
 
         lamppostShader.use();
         model = glm::mat4(1.0f);
@@ -309,10 +314,25 @@ int main() {
         lamppostShader.setFloat("spotlight.cutOff", spotlight.cutOff);
         lamppostShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
         // Pointlight
-        // TODO: lamppost -> pointlight
         setPointLight("pointlight.", pointLight, lamppostShader);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-15.0f, -4.0f, 6.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.47f));	// it's a bit too big for our scene, so scale it down
+        lamppostShader.setMat4("model", model);
+        lamppost.Draw(lamppostShader);
+
+
+        // ################################################# LAMPPOST2 #################################################
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(13.0f, -0.6f, -4.13f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.1f));	// it's a bit too big for our scene, so scale it down
+        cubeShader.setMat4("model", model);
+        cube.Draw(cubeShader);
+
+        setPointLight("pointlight.", pointLight2, lamppostShader);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(13.0f, -4.0f, -6.3f)); // translate it down so it's at the center of the scene
+        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.47f));	// it's a bit too big for our scene, so scale it down
         lamppostShader.setMat4("model", model);
         lamppost.Draw(lamppostShader);
@@ -341,7 +361,6 @@ int main() {
         // blinn
         nissanShader.setBool("blinn", blinn);
         // Pointlight
-        // TODO: lamppost -> pointlight
         setPointLight("pointlight.", pointLight, nissanShader);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-20.0f, -2.75f, 2.5f)); // translate it down so it's at the center of the scene
@@ -372,6 +391,8 @@ int main() {
         mercedesShader.setFloat("spotlight.outerCutOff", spotlight.outerCutOff);
         // blinn
         mercedesShader.setBool("blinn", blinn);
+        // Pointlight
+        setPointLight("pointlight.", pointLight2, mercedesShader);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(7.0f, -2.69f, -2.5f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(3.0f));	// it's a bit too big for our scene, so scale it down
@@ -403,8 +424,7 @@ int main() {
         // blinn
         porscheShader.setBool("blinn", blinn);
         // Pointlight
-        // TODO: lamppost -> pointlight
-//        setPointLight("pointlight.", , porscheShader);
+        setPointLight("pointlight.", pointLight, porscheShader);
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-7.0f, -2.69f, -2.5f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(3.0f));	// it's a bit too big for our scene, so scale it down

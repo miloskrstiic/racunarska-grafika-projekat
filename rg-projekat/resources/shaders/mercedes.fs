@@ -42,6 +42,7 @@ uniform bool blinn;
 
 uniform Material material;
 uniform DirLight directional;
+uniform PointLight pointlight;
 uniform SpotLight spotlight;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
@@ -54,6 +55,7 @@ void main(){
     vec3 viewDir = normalize(viewPos - FragPos);
 
     vec3 result = CalcDirLight(directional, norm, viewDir);
+    result += CalcPointLight(pointlight, norm, FragPos, viewDir);
     result += CalcSpotLight(spotlight, norm, FragPos, viewDir);
 
     FragColor = vec4(result, 1.0);
